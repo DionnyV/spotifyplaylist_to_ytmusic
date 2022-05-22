@@ -81,4 +81,5 @@ optional arguments:
   -r, --remove          Remove playlists with specified regex pattern.
   -a, --all             Transfer all public playlists of the specified user
                         (Spotify User ID).
+  -rr, --reverse        Reverses the order of the playlist.
 ```
