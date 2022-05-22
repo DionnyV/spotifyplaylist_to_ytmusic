@@ -130,6 +130,7 @@ def get_args():
     parser.add_argument("-p", "--public", action='store_true', help="Make the playlist public. Default: private")
     parser.add_argument("-r", "--remove", action='store_true', help="Remove playlists with specified regex pattern.")
     parser.add_argument("-a", "--all", action='store_true', help="Transfer all public playlists of the specified user (Spotify User ID).")
+    parser.add_argument("-rr", "--reverse", action='store_true', help="Reverses the order of the playlist.")
     return parser.parse_args()
 
 
@@ -147,7 +148,7 @@ def main():
             count = count + 1
             try:
                 playlist = Spotify().getSpotifyPlaylist(p['external_urls']['spotify'])
-                videoIds = ytmusic.search_songs(playlist['tracks'])
+                videoIds = ytmusic.search_songs(playlist['tracks'][::-1] if args.reverse else playlist['tracks'])
                 playlist_id = ytmusic.create_playlist(p['name'], p['description'],
                                                     'PUBLIC' if args.public else 'PRIVATE',
                                                     videoIds)
@@ -174,12 +175,12 @@ def main():
 
     if args.update:
         playlistId = ytmusic.get_playlist_id(args.update)
-        videoIds = ytmusic.search_songs(playlist['tracks'])
+        videoIds = ytmusic.search_songs(playlist['tracks'][::-1] if args.reverse else playlist['tracks'])
         ytmusic.remove_songs(playlistId)
         ytmusic.add_playlist_items(playlistId, videoIds)
 
     else:
-        videoIds = ytmusic.search_songs(playlist['tracks'])
+        videoIds = ytmusic.search_songs(playlist['tracks'][::-1] if args.reverse else playlist['tracks'])
         playlistId = ytmusic.create_playlist(name, info, 'PUBLIC' if args.public else 'PRIVATE', videoIds)
 
         print("Success: created playlist \"" + name + "\"\n" +
